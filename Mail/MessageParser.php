@@ -1,21 +1,22 @@
 <?php
 
-namespace MageMontreal\Mailgun\Mail;
+namespace Salecto\Mailgun\Mail;
 
-use Magento\Framework\Mail\MessageInterface;
+
+use Magento\Framework\Mail\EmailMessageInterface;
 
 class MessageParser
 {
 
     /**
-     * @var \Magento\Framework\Message\MessageInterface|\Magento\Framework\Mail\Message
+     * @var \Magento\Framework\Mail\EmailMessageInterface|\Magento\Framework\Mail\Message
      */
     protected $message;
 
     /**
-     * @param \Magento\Framework\Mail\MessageInterface $message
+     * @param \Magento\Framework\Mail\EmailMessageInterface $message
      */
-    public function __construct(MessageInterface $message)
+    public function __construct(EmailMessageInterface $message)
     {
         $this->message = \Zend\Mail\Message::fromString($message->getRawMessage());
     }
@@ -40,7 +41,7 @@ class MessageParser
         $attachments = [];
 
         if ($this->message->getBody() instanceof Mime\Message) {
-            foreach ($this->message->getBody()->getParts() as /** @var \Zend\Mime\Part $part */ $part) {
+            foreach ($this->message->getBody()->getParts() as /** @var \Laminas\Mime\Part $part */ $part) {
                 if ($part->disposition == 'attachment') {
                     $attachments[] = $part;
                 }

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Magento\Framework\Mail\Transport">
-        <plugin name="mailgunTransportInterface" type="MageMontreal\Mailgun\Mail\Transport" sortOrder="1" />
+    <type name="Magento\Framework\Mail\TransportInterface">
+        <plugin name="mailgunTransportInterface" type="Salecto\Mailgun\Plugin\Magento\Framework\Mail\Transport" sortOrder="1" />
     </type>
     <type name="Magento\Framework\Mail\Template\TransportBuilderByStore">
-        <plugin sortOrder="1" name="mailgunTransportBuilderByStore" type="MageMontreal\Mailgun\Plugin\Mail\Template\TransportBuilderByStorePlugin" />
+        <plugin name="mailgunTransportBuilderByStore" type="Salecto\Mailgun\Plugin\Mail\Template\TransportBuilderByStorePlugin" sortOrder="1" />
     </type>
 </config>

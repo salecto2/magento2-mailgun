@@ -1,13 +1,12 @@
 <?php
 
-namespace MageMontreal\Mailgun\Mail;
+namespace Salecto\Mailgun\Plugin\Magento\Framework\Mail;
 
 use Http\Adapter\Guzzle6\Client as HttpClient;
 use Magento\Framework\Mail\TransportInterface;
 use Mailgun\Mailgun;
 use Mailgun\Messages\MessageBuilder;
 use Mailgun\Messages\Exceptions\TooManyParameters;
-use MageMontreal\Mailgun\Helper\Config;
 
 class Transport
 {
@@ -19,29 +18,28 @@ class Transport
     /**
      * Transport constructor.
      *
-     * @param Config $config
+     * @param Salecto\Mailgun\Helper\Config $config
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(Config $config)
+    
+    public function __construct(\Salecto\Mailgun\Helper\Config $config)
     {
         $this->mailgunConfig = $config;
     }
 
     /**
-     * @param TransportInterface $subject
+     * @param \Magento\Framework\Mail\TransportInterface $subject
      * @param callable $proceed
-     *
-     * @throws MailException
-     * @throws Zend_Exception
+     * @return callable $proceed|void
      */
     public function aroundSendMessage(
-        TransportInterface $subject,
+        \Magento\Framework\Mail\TransportInterface $subject,
         callable $proceed
     ) {
-        if ($this->mailgunConfig->enabled()) {
+        if ($this->mailgunConfig->enabled()) {           
             try {
-                $messageBuilder = $this->createMailgunMessage($this->parseMessage());
+                $messageBuilder = $this->createMailgunMessage($this->parseMessage($subject->getMessage()));
 
                 $mailgun = new Mailgun($this->config->privateKey(), $this->getHttpClient(), $this->config->endpoint());
                 $mailgun->setApiVersion($this->config->version());
@@ -49,24 +47,25 @@ class Transport
 
                 $mailgun->sendMessage($this->config->domain(), $messageBuilder->getMessage(), $messageBuilder->getFiles());
             } catch (\Exception $e) {
-
+                die($e);
             }
         } else {
-            $proceed();
+            return $proceed();
         }
     }
 
-
     /**
+     * @param \Magento\Framework\Mail\EmailMessage message
      * @return array
      */
-    protected function parseMessage()
+    protected function parseMessage(\Magento\Framework\Mail\EmailMessage $message)
     {
-        $parser = new MessageParser($this->getMessage());
+        $parser = new \Salecto\Mailgun\Mail\MessageParser($message);
 
         return $parser->parse();
     }
 
+    
     /**
      * @return HttpClient
      */

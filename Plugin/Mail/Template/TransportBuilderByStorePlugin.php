@@ -1,6 +1,6 @@
 <?php
 
-namespace MageMontreal\Mailgun\Plugin\Mail\Template;
+namespace Salecto\Mailgun\Plugin\Mail\Template;
 
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Mail\Template\TransportBuilderByStore;
