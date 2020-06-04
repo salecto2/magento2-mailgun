@@ -5,8 +5,8 @@ namespace Salecto\Mailgun\Plugin\Magento\Framework\Mail;
 use Http\Adapter\Guzzle6\Client as HttpClient;
 use Magento\Framework\Mail\TransportInterface;
 use Mailgun\Mailgun;
-use Mailgun\Messages\MessageBuilder;
-use Mailgun\Messages\Exceptions\TooManyParameters;
+use Mailgun\Message\MessageBuilder;
+use Mailgun\Message\Exceptions\TooManyParameters;
 
 class Transport
 {
@@ -41,11 +41,11 @@ class Transport
             try {
                 $messageBuilder = $this->createMailgunMessage($this->parseMessage($subject->getMessage()));
 
-                $mailgun = new Mailgun($this->config->privateKey(), $this->getHttpClient(), $this->config->endpoint());
-                $mailgun->setApiVersion($this->config->version());
-                $mailgun->setSslEnabled($this->config->ssl());
+                $mailgun = Mailgun::create($this->mailgunConfig->privateKey(), $this->mailgunConfig->endpoint());
+                $mailgun->setApiVersion($this->mailgunConfig->version());
+                $mailgun->setSslEnabled($this->mailgunConfig->ssl());
 
-                $mailgun->sendMessage($this->config->domain(), $messageBuilder->getMessage(), $messageBuilder->getFiles());
+                $mailgun->sendMessage($this->mailgunConfig->domain(), $messageBuilder->getMessage(), $messageBuilder->getFiles());
             } catch (\Exception $e) {
                 die($e);
             }
@@ -111,6 +111,6 @@ class Transport
             $builder->addAttachment($tempPath, $attachment->filename);
         }
 
-        return $builder;
+        return $builder->getMessage();
     }
 }
